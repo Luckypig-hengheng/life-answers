@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>Life Answers 摇摇答案机 · 接线图</title>
+<style>
+  :root{
+    --bg:#f7f6f2; --card:#ffffff; --ink:#2b2a26; --muted:#8a8578;
+    --line:#e3e0d6; --red:#c0392b; --green:#1e8449; --blue:#1f618d;
+    --orange:#b9770e; --purple:#6c3483; --teal:#148f77; --gray:#6b6b6b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:"Microsoft YaHei","PingFang SC",sans-serif;padding:32px 16px}
+  .wrap{max-width:960px;margin:0 auto}
+  h1{font-size:26px;letter-spacing:2px;text-align:center;margin-bottom:6px}
+  .sub{text-align:center;color:var(--muted);font-size:13px;margin-bottom:28px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:24px;margin-bottom:24px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+  h2{font-size:17px;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+  h2::before{content:"";width:4px;height:18px;border-radius:2px;background:var(--blue);display:inline-block}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{padding:9px 12px;border-bottom:1px solid var(--line);text-align:left}
+  th{color:var(--muted);font-weight:600;font-size:12.5px;letter-spacing:1px}
+  code{background:#f0eee6;border:1px solid var(--line);border-radius:4px;padding:1px 7px;font-family:Consolas,monospace;font-size:13px;color:#1a1a1a;white-space:nowrap}
+  .pin{display:inline-block;min-width:64px;text-align:center;border-radius:5px;padding:3px 8px;font-family:Consolas,monospace;font-size:12.5px;color:#fff;font-weight:600}
+  .c1{background:#c0392b}.c2{background:#1e8449}.c3{background:#1f618d}.c4{background:#b9770e}
+  .c5{background:#6c3483}.c6{background:#148f77}.c7{background:#5d6d7e}.c8{background:#a04000}
+  .arrow{color:var(--muted);text-align:center}
+  .power{display:flex;align-items:stretch;gap:0;flex-wrap:wrap;margin-top:8px}
+  .pnode{flex:1;min-width:150px;border:2px solid;border-radius:10px;padding:12px 14px;text-align:center}
+  .pnode b{display:block;font-size:14px;margin-bottom:4px}
+  .pnode small{color:var(--muted);font-size:12px;line-height:1.5;display:block}
+  .pn-bat{border-color:#b9770e;background:#fdf6ec}
+  .pn-tp{border-color:#c0392b;background:#fdf0ee}
+  .pn-sw{border-color:#5d6d7e;background:#f2f4f5}
+  .pn-esp{border-color:#1f618d;background:#eaf2f8}
+  .pconn{display:flex;align-items:center;padding:0 6px;color:var(--muted);font-size:20px;font-weight:700}
+  .warn{margin-top:16px;background:#fef9e7;border:1px solid #f7dc6f;border-radius:8px;padding:12px 16px;font-size:13px;line-height:1.8}
+  .warn b{color:#b9770e}
+  .tip{font-size:12.5px;color:var(--muted);margin-top:12px;line-height:1.8}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>答 案 之 书 · 接 线 图</h1>
+  <div class="sub">ESP32-C3 SuperMini + 2.13" 墨水屏 + MPU-6500/9250 + 锂电池供电</div>
+
+  <div class="card">
+    <h2>① 墨水屏驱动板 v1.4 → ESP32-C3</h2>
+    <table>
+      <tr><th>驱动板丝印</th><th class="arrow"></th><th>ESP32-C3</th><th>功能</th></tr>
+      <tr><td><code>GND</code></td><td class="arrow">──→</td><td><span class="pin c7">GND</span></td><td>共地</td></tr>
+      <tr><td><code>3V3</code></td><td class="arrow">──→</td><td><span class="pin c2">3V3</span></td><td>驱动板供电</td></tr>
+      <tr><td><code>SCK</code></td><td class="arrow">──→</td><td><span class="pin c3">GPIO4</span></td><td>SPI 时钟</td></tr>
+      <tr><td><code>SDA</code></td><td class="arrow">──→</td><td><span class="pin c1">GPIO6</span></td><td>SPI MOSI</td></tr>
+      <tr><td><code>RST</code></td><td class="arrow">──→</td><td><span class="pin c5">GPIO2</span></td><td>复位（商家图: 2=RST）</td></tr>
+      <tr><td><code>DC</code></td><td class="arrow">──→</td><td><span class="pin c4">GPIO3</span></td><td>数据/命令（商家图: 3=DC）</td></tr>
+      <tr><td><code>CS1</code></td><td class="arrow">──→</td><td><span class="pin c6">GPIO7</span></td><td>片选（v1.2/v1.3 板上标 CS）</td></tr>
+      <tr><td><code>CS2</code></td><td class="arrow">──→</td><td><span class="pin c8">不接</span></td><td>单芯片屏无需接</td></tr>
+      <tr><td><code>BUSY</code></td><td class="arrow">──→</td><td><span class="pin c7">GPIO10</span></td><td>忙信号</td></tr>
+    </table>
+    <div class="tip"><b>DC / RST 千万别接反</b>：接反时芯片被持续复位，表现为 BUSY 永久为低、刷新 10 秒超时、电流恒定 1.6mA、屏幕全白。</div>
+    <div class="tip">屏驱动芯片为 SSD1675B，固件用 GxEPD2_213_B72（商家示例 ink_test 指定）。24P 排线插入驱动板 FPC 座时对准 1 脚，绿色胶带面朝有元件一侧；排线只能水平弯折。</div>
+  </div>
+
+  <div class="card">
+    <h2>② MPU-6500 / 9250 → ESP32-C3</h2>
+    <table>
+      <tr><th>MPU 模块</th><th class="arrow"></th><th>ESP32-C3</th><th>功能</th></tr>
+      <tr><td><code>VCC</code></td><td class="arrow">──→</td><td><span class="pin c2">3V3</span></td><td>供电</td></tr>
+      <tr><td><code>GND</code></td><td class="arrow">──→</td><td><span class="pin c7">GND</span></td><td>共地</td></tr>
+      <tr><td><code>SDA</code></td><td class="arrow">──→</td><td><span class="pin c1">GPIO8</span></td><td>I2C 数据</td></tr>
+      <tr><td><code>SCL</code></td><td class="arrow">──→</td><td><span class="pin c3">GPIO9</span></td><td>I2C 时钟</td></tr>
+      <tr><td><code>INT</code></td><td class="arrow">──→</td><td><span class="pin c4">GPIO0</span></td><td>运动中断 → 深度睡眠唤醒</td></tr>
+      <tr><td><code>AD0</code></td><td class="arrow">──→</td><td>悬空 / GND</td><td>I2C 地址 0x68</td></tr>
+    </table>
+    <div class="tip">INT 必须接 GPIO0~5 范围内的引脚（ESP32-C3 只有这些支持深度睡眠 GPIO 唤醒），本方案固定用 GPIO0。</div>
+  </div>
+
+  <div class="card">
+    <h2>③ 供电链路</h2>
+    <div class="power">
+      <div class="pnode pn-bat"><b>锂电池 3.7V</b><small>603048 / 502030<br>B+ → TP4056 B+<br>B− → TP4056 B−</small></div>
+      <div class="pconn">→</div>
+      <div class="pnode pn-tp"><b>TP4056 充电保护板</b><small>USB-C 充电输入<br>OUT+ / OUT− 输出</small></div>
+      <div class="pconn">→</div>
+      <div class="pnode pn-sw"><b>拨动开关</b><small>串接在 OUT+ 上<br>控制整机开关机</small></div>
+      <div class="pconn">→</div>
+      <div class="pnode pn-esp"><b>ESP32-C3 5V 引脚</b><small>经板载 3.3V LDO 稳压<br>3V3 引脚输出给屏和 MPU</small></div>
+    </div>
+    <div class="warn">
+      <b>⚠ 注意：</b>锂电池千万不要直接接 SuperMini 的 <code>3V3</code> 引脚（满电 4.2V 会超压），
+      一定接 <code>5V</code> 引脚走板载 LDO。充电时可以边充边用；外壳内注意电池绝缘固定，避免排线被挤压。
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>④ 引脚总览</h2>
+    <table>
+      <tr><th>GPIO</th><th>用途</th><th>GPIO</th><th>用途</th></tr>
+      <tr><td><span class="pin c1">GPIO6</span></td><td>屏 SPI MOSI</td><td><span class="pin c3">GPIO8</span></td><td>MPU SDA</td></tr>
+      <tr><td><span class="pin c3">GPIO4</span></td><td>屏 SPI SCK</td><td><span class="pin c6">GPIO9</span></td><td>MPU SCL</td></tr>
+      <tr><td><span class="pin c6">GPIO7</span></td><td>屏 CS1</td><td><span class="pin c4">GPIO0</span></td><td>MPU INT（睡眠唤醒）</td></tr>
+      <tr><td><span class="pin c8">GPIO1</span></td><td>（空闲/双芯片CS2）</td><td><span class="pin c7">GPIO10</span></td><td>屏 BUSY</td></tr>
+      <tr><td><span class="pin c5">GPIO2</span></td><td>屏 RST</td><td><span class="pin c4">GPIO3</span></td><td>屏 DC</td></tr>
+    </table>
+    <div class="tip">GPIO20/21（RX/TX）留空，可日后扩展按键。板载蓝色 LED 与 GPIO8 相邻电路，程序中未使用。</div>
+  </div>
+</div>
+</body>
+</html>
